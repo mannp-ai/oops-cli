@@ -43,9 +43,8 @@ To use `oops` effectively on a daily basis, add the following function to your s
 
 ```bash
 oops() {
-    # Capture the last executed command from history
-    local last_cmd=$(fc -ln -1)
-    # Run the explainer
+    # Get the last executed command directly from the session's history
+    local last_cmd=$(history 1 | sed 's/^[ ]*[0-9]*[ ]*//')
     python3 -m oops.cli "$last_cmd"
 }
 ```

@@ -7,14 +7,17 @@ def main():
     try:
         matcher = Matcher()
         
-        # In a real use case, we might pass the error output directly if piped
-        # or read from history.
         command = get_last_command()
         stderr = capture_stderr()
         
-        # For testing/demo purposes, if no stderr found, we can try to use arguments
+        # If the user passed arguments, prioritize them
         if len(sys.argv) > 1:
             stderr = " ".join(sys.argv[1:])
+        
+        # If command is 'oops' itself, it's a recursive call or stale history
+        if command.strip().startswith("oops"):
+             # Fallback: try to see if we can get the error string from stdin/args
+             pass
 
         match_result = matcher.match(command, stderr)
         

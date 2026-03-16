@@ -14,20 +14,16 @@ def get_last_command():
     if history_file and os.path.exists(history_file):
         try:
             with open(history_file, "rb") as f:
-                # Read last line
-                f.seek(0, os.SEEK_END)
-                pos = f.tell() - 2
-                while pos > 0:
-                    f.seek(pos)
-                    if f.read(1) == b"\n":
-                        break
-                    pos -= 1
-                last_line = f.readline().decode("utf-8", errors="ignore").strip()
-                
-                # ZSH history format often has timestamps like ': 1710620000:0;command'
-                if "zsh" in shell and ";" in last_line:
-                    return last_line.split(";", 1)[1]
-                return last_line
+                lines = f.readlines()
+                for line in reversed(lines):
+                    cmd = line.decode("utf-8", errors="ignore").strip()
+                    if "zsh" in shell and ";" in cmd:
+                        cmd = cmd.split(";", 1)[1]
+                    
+                    # Ignore meta-commands that pollute history
+                    if any(cmd.startswith(x) for x in ["oops", "source", "alias", "export"]):
+                        continue
+                    return cmd
         except Exception:
             pass
 
@@ -36,16 +32,7 @@ def get_last_command():
 def capture_stderr():
     """
     Attempts to capture stderr of the last command.
-    In a real-world scenario, this might involve reading from journalctl
-    or a temporary log file if a shell integration is active.
-    For v0.1, we'll return a placeholder or try to read from common logs.
+    In v0.1, we primarily rely on the OOPS_STDERR environment variable
+    passed by the shell alias, or manual input.
     """
-    # Placeholder for now. Real implementation might look at journalctl -n 20
-    try:
-        result = subprocess.run(
-            ["journalctl", "-n", "20", "--no-pager", "_COMM=" + get_last_command().split()[0]],
-            capture_output=True, text=True
-        )
-        return result.stdout
-    except Exception:
-        return ""
+    return os.environ.get("OOPS_STDERR", "")

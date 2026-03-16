@@ -12,6 +12,17 @@
       "tags": ["apt", "package-manager"]
     },
     {
+      "id": "apt-invalid-operation",
+      "match": ["E: Invalid operation", "Error: Invalid operation"],
+      "what": "Apt doesn't recognize the command you typed.",
+      "why": "You likely have a typo in the sub-command (e.g., 'updtw' instead of 'update').",
+      "fix": {
+        "default": "sudo apt update"
+      },
+      "learn": "Apt has a specific set of commands like 'update', 'install', 'remove', and 'upgrade'. Check for typos!",
+      "tags": ["apt", "typo"]
+    },
+    {
       "id": "command-not-found",
       "match": ["command not found"],
       "what": "The command you typed was not found in your system.",
