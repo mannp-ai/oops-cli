@@ -1,58 +1,89 @@
-# oops — Linux Error Explainer (Retro CRT Edition) 🚀
+# oops-cli
 
-`oops` is a premium, nerdy terminal explainer that turns cryptic Linux errors into plain English. Built with a retro CRT aesthetic, it captures your last failed command and tells you **What** went wrong, **Why**, and **How** to fix it instantly.
+A sophisticated terminal error explainer for Linux. `oops` captures the context of failed commands and provides clear, actionable explanations and solutions through a specialized Terminal User Interface (TUI).
 
-![Aesthetic](https://img.shields.io/badge/Aesthetic-CRT_Retro-00ff41?style=for-the-badge&logo=linux)
-![License](https://img.shields.io/badge/License-MIT-white?style=for-the-badge)
+[![PyPI version](https://img.shields.io/pypi/v/oops-cli.svg)](https://pypi.org/project/oops-cli/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-## 📺 Retro Aesthetics 2.0
-- **Matrix / Amber / Classic / Cyberpunk**: Press **'T'** to switch between 4 classic tube themes.
-- **Hacker Boot Animation**: Fast-scroll loading sequence simulating kernel log scanning.
-- **Compact Technical Headers**: Box-drawing characters for that 80s server look.
-- **System Telemetry**: Real-time CPU, RAM, and Kernel status tracking.
+## Overview
 
-## 🛠 Features
-- **30+ Error Patterns**: Intelligent matching for Git, Docker, SSH, Networking, Pip, Apt, and more.
-- **Smart Path Awareness**: Automatically detects and verifies if file paths in errors actually exist.
-- **Instant Fix Copy**: Press **'C'** to copy the suggested fix directly to your clipboard.
-- **Performance Optimized**: Zero-lag theme switching and lightweight resource footprint.
+Terminal errors are often cryptic and overwhelming. `oops` bridges the gap by analyzing `stderr` and command history to provide:
+- **Concise Explanations**: What went wrong in plain English.
+- **Root Cause Analysis**: Why the error occurred based on system context.
+- **Immediate Fixes**: Actionable commands to resolve the issue.
+- **Path Awareness**: Verification of file paths mentioned in error messages.
 
-## 🚀 Daily Usage (Installation)
+## Features
 
-### 1. Install via Pip
+- **Extensive Pattern Library**: Built-in support for 35+ common Linux error categories including Git, Docker, SSH, Networking, and Package Managers.
+- **Integrated TUI**: A responsive interface built with Textual, featuring system telemetry and interactive theme switching.
+- **Efficient Workflow**: One-key copying of fix commands to the system clipboard.
+- **Retro Aesthetic**: High-contrast themes including Matrix (Green), Amber (CRT), Classic (IBM), and Cyberpunk (Neon).
+
+## Installation
+
+### 1. Install via pip
+
 ```bash
-python3 -m pip install .
+pip install oops-cli
 ```
 
 ### 2. System Dependencies
-Required for the clipboard functionality:
-- **Ubuntu/Debian**: `sudo apt install xclip`
-- **Fedora**: `sudo dnf install xclip`
 
-### 3. Shell Integration (The "Pro" Way)
-To use `oops` seamlessly on a daily basis, add the following function to your `~/.bashrc` or `~/.zshrc`:
+`oops` requires a clipboard utility for the "copy fix" feature:
+
+- **Debian/Ubuntu**: `sudo apt install xclip`
+- **Fedora/RHEL**: `sudo dnf install xclip`
+- **Arch Linux**: `sudo pacman -S xclip`
+
+## Configuration
+
+To use `oops` effectively on a daily basis, add the following function to your shell configuration (`~/.bashrc` or `~/.zshrc`):
 
 ```bash
-# Put this in your .bashrc or .zshrc
 oops() {
-    # This function captures the output of the last command and passes it to oops
-    # For now, it simply runs the oops explainer on the last history entry
+    # Capture the last executed command from history
     local last_cmd=$(fc -ln -1)
+    # Run the explainer
     python3 -m oops.cli "$last_cmd"
 }
 ```
 
-After adding this, you can simply type `oops` whenever a command fails!
+After restarting your shell, simply type `oops` whenever a command fails.
 
-## ⌨️ TUI Shortcuts
-| Key | Action |
-|-----|--------|
-| `C` | Copy Fix Command |
-| `T` | Cycle Retro Themes |
-| `Q` | Quit Explainer |
+## Usage
 
-## 📖 Pattern Library
-The tool matches against a comprehensive library in `oops/patterns/core.json`. You can easily add your own patterns by following the JSON structure.
+When a command returns an error, execute `oops`:
 
-## ⚖️ License
-MIT - Created with 💚 for the Linux community.
+```bash
+$ git push origin main
+error: failed to push some refs...
+$ oops
+```
+
+### Keyboard Shortcuts
+
+| Key | Description |
+|-----|-------------|
+| `C` | Copy suggested fix to clipboard |
+| `T` | Cycle through display themes |
+| `Q` | Quit the application |
+
+## Architecture
+
+`oops` is designed with modularity in mind:
+- **Capture Engine**: Retrieves command history and diagnostic logs.
+- **Matching Engine**: Uses prioritized regex matching to identify specific error signatures.
+- **Aesthetic TUI**: A performant rendering engine with zero-lag theme transitions.
+
+## Contributing
+
+Specific error patterns are defined in `oops/patterns/core.json`. Contributions for new patterns are welcome. Please ensure new patterns include:
+- A unique `id`
+- Robust `match` regexes
+- Meaningful `what`, `why`, and `fix` sections
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
