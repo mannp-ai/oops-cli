@@ -193,6 +193,17 @@
       "tags": ["system", "security"]
     },
     {
+      "id": "pep-668-managed-env",
+      "match": ["externally-managed-environment", "error: externally-managed-environment"],
+      "what": "Python's global environment is locked on this system.",
+      "why": "Modern Linux distros (Debian 12+, Ubuntu 23.04+) prevent 'pip' from modified system libraries to avoid breaking the OS.",
+      "fix": {
+        "default": "python3 -m venv .venv && source .venv/bin/activate"
+      },
+      "learn": "PEP 668 introduced this to ensure system stability. Use Virtual Environments (venv) or 'pipx' for isolated applications.",
+      "tags": ["python", "pip", "system"]
+    },
+    {
       "id": "permission-denied-sudo",
       "match": ["\\bPermission denied\\b", "E: Could not open lock file", "E: Unable to acquire the dpkg frontend lock"],
       "what": "You don't have the necessary permissions for this command.",
