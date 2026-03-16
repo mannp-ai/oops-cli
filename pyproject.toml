@@ -3,7 +3,7 @@ name = "oops-cli"
 version = "0.1.0"
 description = "Linux Error Explainer — TUI Tool"
 authors = [
-    { name = "DeepMind Antigravity", email = "antigravity@google.com" }
+    { name = "Mann Patel", email = "mann@mann.mann" }
 ]
 dependencies = [
     "textual>=0.47.0",

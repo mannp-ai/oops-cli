@@ -25,8 +25,15 @@ Terminal errors are often cryptic and overwhelming. `oops` bridges the gap by an
 
 ### 1. Install via pip
 
+Since this package is currently in development, you can install it directly from GitHub:
+
 ```bash
-pip install oops-cli
+pip install git+https://github.com/mannp-ai/oops-cli.git
+```
+
+Or for local development:
+```bash
+pip install -e .
 ```
 
 ### 2. System Dependencies

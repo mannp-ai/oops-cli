@@ -25,8 +25,15 @@ def main():
             app = OopsTUI(match_result)
             app.run()
         else:
-            print(f"oops: No match found for '{command}'.")
-            print("Try searching: https://www.google.com/search?q=" + command.replace(" ", "+") + "+error")
+            print("\033[1;31m[oops] No solution found.\033[0m")
+            print(f"I analyzed your last command: \033[1;32m{command}\033[0m")
+            if stderr:
+                snippet = (stderr[:100] + '...') if len(stderr) > 100 else stderr
+                print(f"and the error output: \033[1;33m{snippet.strip()}\033[0m")
+            
+            print("\nIf this was a typo, try running with the error message directly:")
+            print("  oops \"your error message here\"")
+            print("\nOr search online: https://www.google.com/search?q=" + command.replace(" ", "+") + "+error")
     except KeyboardInterrupt:
         print("\n[oops] Explainer stopped.")
         sys.exit(0)

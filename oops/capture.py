@@ -31,8 +31,20 @@ def get_last_command():
 
 def capture_stderr():
     """
-    Attempts to capture stderr of the last command.
-    In v0.1, we primarily rely on the OOPS_STDERR environment variable
-    passed by the shell alias, or manual input.
+    Attempts to capture stderr of last command using journalctl with strict time limit.
     """
-    return os.environ.get("OOPS_STDERR", "")
+    # Priority 1: Environment variable override
+    env_stderr = os.environ.get("OOPS_STDERR", "")
+    if env_stderr:
+        return env_stderr
+
+    # Priority 2: Precise journalctl lookup (last 10 seconds only)
+    try:
+        # We look for the last 10 seconds of logs to ensure relevance
+        result = subprocess.run(
+            ["journalctl", "--since", "10 seconds ago", "-n", "20", "--no-pager"],
+            capture_output=True, text=True, check=False
+        )
+        return result.stdout
+    except Exception:
+        return ""

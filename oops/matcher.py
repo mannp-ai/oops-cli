@@ -36,7 +36,30 @@ class Matcher:
                 if re.search(regex, combined_context, re.IGNORECASE):
                     return self._build_result(p, command, missing_paths)
         
+        # Third pass: Universal Fallback if no specific pattern matched
+        # but we have some error output or command context.
+        if stderr.strip() or (command and command != "Unknown command"):
+             return self._build_generic_result(command, stderr, missing_paths)
+
         return None
+
+    def _build_generic_result(self, command, stderr, missing_paths):
+        # We try to clean up the command for a better search link
+        search_query = command.split()[0] if command else "linux+command"
+        
+        result = {
+            "id": "generic-error",
+            "command": command,
+            "what": "An unrecognized error occurred.",
+            "why": "The command returned a non-zero exit status or error output that doesn't match our known patterns.",
+            "fix": f"Google Search: 'linux {search_query} error'",
+            "learn": "Try running the command with '--help' or checking the 'man' pages for usage details."
+        }
+        
+        if missing_paths:
+             result["why"] += f"\nNote: The path '{missing_paths[0]}' was not found."
+             
+        return result
 
     def _build_result(self, p, command, missing_paths):
         result = {

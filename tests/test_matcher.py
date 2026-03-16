@@ -45,3 +45,12 @@ def test_matcher_permission_denied_bias_fix():
     # Should match ssh-pubkey-denied instead of permission-denied-sudo
     assert match["id"] == "ssh-pubkey-denied"
     assert "ssh-add" in match["fix"]
+def test_matcher_universal_fallback():
+    matcher = Matcher()
+    command = "some-weird-command"
+    stderr = "Error: something totally unknown happened"
+    match = matcher.match(command, stderr)
+    assert match is not None
+    assert match["id"] == "generic-error"
+    assert "unrecognized error" in match["what"].lower()
+    assert "Google Search" in match["fix"]
