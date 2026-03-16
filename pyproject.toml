@@ -1,0 +1,22 @@
+[project]
+name = "oops-cli"
+version = "0.1.0"
+description = "Linux Error Explainer — TUI Tool"
+authors = [
+    { name = "DeepMind Antigravity", email = "antigravity@google.com" }
+]
+dependencies = [
+    "textual>=0.47.0",
+    "psutil>=5.9.0",
+    "pyperclip>=1.8.2",
+    "rich>=13.0.0",
+]
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
+[project.scripts]
+oops = "oops.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

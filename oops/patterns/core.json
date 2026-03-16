@@ -1,0 +1,207 @@
+{
+  "patterns": [
+    {
+      "id": "apt-lock",
+      "match": ["Could not get lock /var/lib/dpkg/lock", "Could not open lock file /var/lib/apt/lists/lock"],
+      "what": "Apt is currently locked by another process.",
+      "why": "Another package manager (like Software Updater or another terminal) is already running or didn't close properly.",
+      "fix": {
+        "default": "sudo rm /var/lib/apt/lists/lock && sudo rm /var/lib/dpkg/lock"
+      },
+      "learn": "Linux uses lock files to ensure only one process modifies installed packages at a time to prevent corruption.",
+      "tags": ["apt", "package-manager"]
+    },
+    {
+      "id": "command-not-found",
+      "match": ["command not found"],
+      "what": "The command you typed was not found in your system.",
+      "why": "Either the package is not installed, or the directory containing it is not in your PATH.",
+      "fix": {
+        "default": "sudo apt install {command}"
+      },
+      "learn": "The PATH variable is a list of directories where the system looks for executable files. If a command is missing, you may need to install it.",
+      "tags": ["installation", "path"]
+    },
+    {
+      "id": "port-in-use",
+      "match": ["Address already in use", "Bind failed"],
+      "what": "The port this application is trying to use is already taken.",
+      "why": "Another service or a previous instance of this app is already listening on this port.",
+      "fix": {
+        "default": "sudo lsof -i :P | awk 'NR>1 {print $2}' | xargs kill -9"
+      },
+      "learn": "Ports are like doors for network communication. Only one process can use a specific 'door' at a time.",
+      "tags": ["networking", "ports"]
+    },
+    {
+      "id": "pip-not-found",
+      "match": ["pip: command not found"],
+      "what": "The 'pip' package manager is not installed.",
+      "why": "Python is installed, but the pip installer might be missing on some Linux distributions by default.",
+      "fix": {
+        "default": "sudo apt install python3-pip"
+      },
+      "learn": "Pip is the standard package manager for Python, used to install libraries from the Python Package Index (PyPI).",
+      "tags": ["python", "pip"]
+    },
+    {
+      "id": "module-not-found",
+      "match": ["ModuleNotFoundError: No module named"],
+      "what": "Python cannot find the library you are trying to use.",
+      "why": "The library is either not installed in your current environment or you have a typo in the import name.",
+      "fix": {
+        "default": "pip install {module}"
+      },
+      "learn": "Python uses a search path (sys.path) to locate modules. If a module isn't in one of those folders, it won't be found.",
+      "tags": ["python", "pip", "dependencies"]
+    },
+    {
+      "id": "no-space-left",
+      "match": ["No space left on device"],
+      "what": "Your disk is full.",
+      "why": "A partition or the entire drive has run out of space to write new data.",
+      "fix": {
+        "default": "du -sh * | sort -h"
+      },
+      "learn": "Monitoring disk usage is critical. The 'df -h' command shows overall space, while 'du' helps find large files.",
+      "tags": ["disk", "storage"]
+    },
+    {
+      "id": "git-merge-conflict",
+      "match": ["CONFLICT \\(content\\): Merge conflict in"],
+      "what": "There is a merge conflict in your Git repository.",
+      "why": "Someone else made changes to the same part of a file you're working on.",
+      "fix": { "default": "git status" },
+      "learn": "Git conflicts occur when two branches have diametrically opposed changes that Git can't resolve automatically.",
+      "tags": ["git"]
+    },
+    {
+      "id": "git-unstaged-changes",
+      "match": ["Your local changes to the following files would be overwritten by merge"],
+      "what": "You have unstaged changes that Git refuses to overwrite.",
+      "why": "Pulling new code would delete your local work because it's not committed or stashed.",
+      "fix": { "default": "git stash && git pull && git stash pop" },
+      "learn": "Stashing is a great way to 'pause' your work and save it for later without making a commit.",
+      "tags": ["git"]
+    },
+    {
+      "id": "docker-daemon-off",
+      "match": ["Is the docker daemon running\\?", "Cannot connect to the Docker daemon"],
+      "what": "The Docker daemon is not running.",
+      "why": "Docker service needs to be started to run containers.",
+      "fix": { "default": "sudo systemctl start docker" },
+      "learn": "Docker runs as a background service (daemon) that manages containers on your system.",
+      "tags": ["docker"]
+    },
+    {
+      "id": "ssh-pubkey-denied",
+      "match": ["Permission denied \\(publickey\\)"],
+      "what": "SSH authentication failed.",
+      "why": "The server doesn't recognize your SSH key or you haven't specified the right identity file.",
+      "fix": { "default": "ssh-add ~/.ssh/id_rsa" },
+      "learn": "SSH keys use asymmetric cryptography to provide secure, passwordless authentication.",
+      "tags": ["ssh", "security"]
+    },
+    {
+      "id": "dns-failure",
+      "match": ["Temporary failure in name resolution", "Could not resolve host"],
+      "what": "Your system cannot resolve the website's address (DNS).",
+      "why": "You might be offline, or your DNS settings are incorrect.",
+      "fix": { "default": "ping -c 3 8.8.8.8" },
+      "learn": "DNS is like a phonebook for the internet, translating names like 'google.com' into IP addresses.",
+      "tags": ["networking"]
+    },
+    {
+      "id": "dir-not-empty",
+      "match": ["Directory not empty"],
+      "what": "You're trying to remove a directory that still has files inside.",
+      "why": "The standard 'rmdir' command only works on empty folders.",
+      "fix": { "default": "rm -rf {command.split()[-1]}" },
+      "learn": "The '-r' (recursive) flag tells 'rm' to delete a folder and everything inside it.",
+      "tags": ["filesystem", "bash"]
+    },
+    {
+      "id": "connection-refused",
+      "match": ["Connection refused"],
+      "what": "The connection was rejected by the server.",
+      "why": "Either the server is down, or no service is listening on that specific port.",
+      "fix": { "default": "nc -zv {command.split()[-1]} 80" },
+      "learn": "A 'refused' connection means the system actually reached the host, but the port was closed.",
+      "tags": ["networking"]
+    },
+    {
+      "id": "is-a-directory",
+      "match": ["Is a directory"],
+      "what": "You're trying to perform a file operation on a folder.",
+      "why": "The command expected a single file, but you provided a directory path.",
+      "fix": { "default": "ls -d {command.split()[-1]}" },
+      "learn": "In Linux, everything is a file, but directories and regular files are treated differently by most tools.",
+      "tags": ["filesystem"]
+    },
+    {
+      "id": "not-a-directory",
+      "match": ["Not a directory"],
+      "what": "You're trying to access a file as if it were a folder.",
+      "why": "A component of the path prefix is not a directory.",
+      "fix": { "default": "file {command.split()[-1]}" },
+      "learn": "This often happens when a file has the same name as a directory you're trying to create or access.",
+      "tags": ["filesystem"]
+    },
+    {
+      "id": "segfault",
+      "match": ["Segmentation fault", "core dumped"],
+      "what": "The program crashed due to a memory access violation.",
+      "why": "Requested memory that doesn't belong to it, often due to a bug in the code (C/C++, etc.).",
+      "fix": { "default": "gdb {command.split()[0]}" },
+      "learn": "Segmentation faults occur when a process tries to access a restricted memory area.",
+      "tags": ["system", "debugging"]
+    },
+    {
+      "id": "syntax-error-py",
+      "match": ["SyntaxError: invalid syntax", "IndentationError:"],
+      "what": "There is a structural error in your Python code.",
+      "why": "You have a typo, missing colon, or incorrect indentation.",
+      "fix": { "default": "python3 -m py_compile {command.split()[-1]}" },
+      "learn": "Python is very strict about white space and syntax rules to ensure readability.",
+      "tags": ["python"]
+    },
+    {
+      "id": "npm-not-found",
+      "match": ["npm: command not found", "npm ERR! code ENOTFOUND"],
+      "what": "Node Package Manager (npm) error or not found.",
+      "why": "Either npm is not installed, or you have a networking/DNS issue while installing packages.",
+      "fix": { "default": "sudo apt install nodejs npm" },
+      "learn": "NPM is the default package manager for Node.js, managing millions of available Javascript libraries.",
+      "tags": ["nodejs", "npm"]
+    },
+    {
+      "id": "read-only-fs",
+      "match": ["Read-only file system"],
+      "what": "You're trying to write to a drive that is locked for writing.",
+      "why": "The filesystem was mounted as read-only, often due to an error during boot or hardware failure.",
+      "fix": { "default": "sudo mount -o remount,rw /" },
+      "learn": "Linux mounts filesystems as read-only if it detects corruption to prevent further data loss.",
+      "tags": ["system", "filesystem"]
+    },
+    {
+      "id": "operation-not-permitted",
+      "match": ["Operation not permitted"],
+      "what": "The system blocked this operation.",
+      "why": "Unlike 'Permission denied', this usually means the operation is not allowed even for root (e.g., immutable files).",
+      "fix": { "default": "lsattr {command.split()[-1]}" },
+      "learn": "File attributes like 'immutable' or 'append-only' can block operations regardless of user permissions.",
+      "tags": ["system", "security"]
+    },
+    {
+      "id": "permission-denied-sudo",
+      "match": ["\\bPermission denied\\b", "E: Could not open lock file", "E: Unable to acquire the dpkg frontend lock"],
+      "what": "You don't have the necessary permissions for this command.",
+      "why": "This command requires administrative (root) privileges to modify system files.",
+      "fix": {
+        "default": "sudo !!"
+      },
+      "learn": "'sudo' (superuser do) allows you to run commands with root privileges. Using it carefully is essential for system security.",
+      "tags": ["sudo", "permissions", "file"]
+    }
+  ]
+}
