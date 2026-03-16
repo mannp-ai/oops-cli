@@ -23,16 +23,21 @@ Terminal errors are often cryptic and overwhelming. `oops` bridges the gap by an
 
 ## Installation
 
-### 1. Install via pip
+### 1. Simple Installation (Recommended)
 
-Since this package is currently in development, you can install it directly from GitHub:
+Run this one-liner to automatically install `oops-cli`, set up a virtual environment, and configure your shell integration:
 
 ```bash
-pip install git+https://github.com/mannp-ai/oops-cli.git
+curl -sSL https://raw.githubusercontent.com/mannp-ai/oops-cli/main/install.sh | bash
 ```
 
-Or for local development:
+### 2. Manual Installation (Alternative)
+
+If you prefer to install manually, you can clone the repository and install via pip:
+
 ```bash
+git clone https://github.com/mannp-ai/oops-cli.git
+cd oops-cli
 pip install -e .
 ```
 
